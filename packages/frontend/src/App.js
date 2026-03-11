@@ -34,15 +34,15 @@ function App() {
       <Box
         sx={{
           minHeight: '100vh',
-          background: '#f5f5f5',
+          background: 'var(--color-page-bg)',
           pb: 4
         }}
       >
         <AppBar
           position="static"
           sx={{
-            background: '#1976d2',
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)'
+            background: 'var(--color-primary)',
+            boxShadow: '0 2px 4px var(--color-shadow-medium)'
           }}
         >
           <Toolbar>

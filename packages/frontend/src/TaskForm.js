@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Paper, Typography, Box } from '@mui/material';
+import { TextField, Button, Paper, Typography, Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import SaveIcon from '@mui/icons-material/Save';
+
+const PRIORITY_OPTIONS = [
+  { value: 'P1', label: 'P1 — High', color: 'var(--color-priority-p1)' },
+  { value: 'P2', label: 'P2 — Medium', color: 'var(--color-priority-p2)' },
+  { value: 'P3', label: 'P3 — Low', color: 'var(--color-priority-p3)' },
+];
 
 function TaskForm({ onSave, initialTask }) {
   const [title, setTitle] = useState(initialTask?.title || '');
   const [description, setDescription] = useState(initialTask?.description || '');
   const [dueDate, setDueDate] = useState(initialTask?.due_date || '');
+  const [priority, setPriority] = useState(initialTask?.priority || 'P3');
   const [error, setError] = useState(null);
 
   // Helper to normalize date string to YYYY-MM-DD format
@@ -30,10 +37,12 @@ function TaskForm({ onSave, initialTask }) {
       setTitle(initialTask.title || '');
       setDescription(initialTask.description || '');
       setDueDate(normalizeDateString(initialTask.due_date));
+      setPriority(initialTask.priority || 'P3');
     } else {
       setTitle('');
       setDescription('');
       setDueDate('');
+      setPriority('P3');
     }
   }, [initialTask]);
 
@@ -44,10 +53,11 @@ function TaskForm({ onSave, initialTask }) {
       return;
     }
     setError(null);
-    await onSave({ title, description, due_date: dueDate });
+    await onSave({ title, description, due_date: dueDate, priority });
     setTitle('');
     setDescription('');
     setDueDate('');
+    setPriority('P3');
   };
 
   return (
@@ -57,18 +67,18 @@ function TaskForm({ onSave, initialTask }) {
         p: 2, 
         mb: 2, 
         width: '100%',
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: 'var(--color-surface)',
         backdropFilter: 'blur(10px)',
         borderRadius: 3,
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-        border: '1px solid rgba(255, 255, 255, 0.2)'
+        boxShadow: '0 8px 32px var(--color-shadow-medium)',
+        border: '1px solid var(--color-surface-border)'
       }}
     >
       <Typography 
         variant="subtitle1" 
         sx={{ 
           fontWeight: 600,
-          color: '#1976d2',
+          color: 'var(--color-primary)',
           mb: 1.5
         }}
       >
@@ -89,10 +99,10 @@ function TaskForm({ onSave, initialTask }) {
             '& .MuiOutlinedInput-root': {
               borderRadius: 2,
               '&:hover fieldset': {
-                borderColor: '#1976d2',
+                borderColor: 'var(--color-primary)',
               },
               '&.Mui-focused fieldset': {
-                borderColor: '#1976d2',
+                borderColor: 'var(--color-primary)',
               }
             }
           }}
@@ -112,37 +122,60 @@ function TaskForm({ onSave, initialTask }) {
             '& .MuiOutlinedInput-root': {
               borderRadius: 2,
               '&:hover fieldset': {
-                borderColor: '#1976d2',
+                borderColor: 'var(--color-primary)',
               },
               '&.Mui-focused fieldset': {
-                borderColor: '#1976d2',
+                borderColor: 'var(--color-primary)',
               }
             }
           }}
         />
-        <TextField
-          id="task-due-date"
-          label="Due Date"
-          type="date"
-          value={dueDate}
-          onChange={e => setDueDate(e.target.value)}
-          variant="outlined"
-          fullWidth
-          size="small"
-          InputLabelProps={{ shrink: true }}
-          inputProps={{ 'data-testid': 'due-date-input' }}
-          sx={{
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 2,
-              '&:hover fieldset': {
-                borderColor: '#1976d2',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#1976d2',
+        <Box display="flex" gap={1.5}>
+          <TextField
+            id="task-due-date"
+            label="Due Date"
+            type="date"
+            value={dueDate}
+            onChange={e => setDueDate(e.target.value)}
+            variant="outlined"
+            fullWidth
+            size="small"
+            InputLabelProps={{ shrink: true }}
+            inputProps={{ 'data-testid': 'due-date-input' }}
+            sx={{
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 2,
+                '&:hover fieldset': { borderColor: 'var(--color-primary)' },
+                '&.Mui-focused fieldset': { borderColor: 'var(--color-primary)' }
               }
-            }
-          }}
-        />
+            }}
+          />
+          <FormControl size="small" sx={{ minWidth: 140 }}>
+            <InputLabel id="priority-label">Priority</InputLabel>
+            <Select
+              labelId="priority-label"
+              id="task-priority"
+              value={priority}
+              label="Priority"
+              onChange={e => setPriority(e.target.value)}
+              inputProps={{ 'data-testid': 'priority-input' }}
+              sx={{
+                borderRadius: 2,
+                '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--color-primary)' },
+                '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--color-primary)' }
+              }}
+            >
+              {PRIORITY_OPTIONS.map(opt => (
+                <MenuItem key={opt.value} value={opt.value}>
+                  <Box display="flex" alignItems="center" gap={1}>
+                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: opt.color, flexShrink: 0 }} />
+                    {opt.label}
+                  </Box>
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Box>
         {error && <Typography color="error" sx={{ fontWeight: 500, fontSize: '0.875rem' }}>{error}</Typography>}
         <Box display="flex" gap={2}>
           <Button 

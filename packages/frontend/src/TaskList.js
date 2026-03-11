@@ -6,6 +6,14 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import EventIcon from '@mui/icons-material/Event';
 
+const PRIORITY_COLORS = {
+  P1: 'var(--color-priority-p1)',
+  P2: 'var(--color-priority-p2)',
+  P3: 'var(--color-priority-p3)',
+};
+
+const PRIORITY_LABELS = { P1: 'P1', P2: 'P2', P3: 'P3' };
+
 function TaskList({ onEdit }) {
   const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +74,7 @@ function TaskList({ onEdit }) {
 
   if (loading) return (
     <Box display="flex" justifyContent="center" alignItems="center" minHeight="200px">
-      <CircularProgress sx={{ color: '#1976d2' }} />
+      <CircularProgress sx={{ color: 'var(--color-primary)' }} />
     </Box>
   );
   if (error) return <Typography color="error" sx={{ fontWeight: 500 }}>{error}</Typography>;
@@ -80,23 +88,23 @@ function TaskList({ onEdit }) {
         width: '100%', 
         maxHeight: '60vh', 
         overflow: 'auto',
-        background: 'rgba(255, 255, 255, 0.95)',
+        background: 'var(--color-surface)',
         backdropFilter: 'blur(10px)',
         borderRadius: 3,
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.1)',
-        border: '1px solid rgba(255, 255, 255, 0.2)',
+        boxShadow: '0 8px 32px var(--color-shadow-medium)',
+        border: '1px solid var(--color-surface-border)',
         '&::-webkit-scrollbar': {
           width: '8px',
         },
         '&::-webkit-scrollbar-track': {
-          background: 'rgba(0, 0, 0, 0.05)',
+          background: 'var(--color-shadow-subtle)',
           borderRadius: '4px',
         },
         '&::-webkit-scrollbar-thumb': {
-          background: 'rgba(25, 118, 210, 0.5)',
+          background: 'var(--color-primary-scrollbar)',
           borderRadius: '4px',
           '&:hover': {
-            background: 'rgba(25, 118, 210, 0.7)',
+            background: 'var(--color-primary-scrollbar-hover)',
           }
         }
       }}
@@ -105,7 +113,7 @@ function TaskList({ onEdit }) {
         variant="subtitle1" 
         sx={{ 
           fontWeight: 600,
-          color: '#1976d2',
+          color: 'var(--color-primary)',
           mb: 1.5
         }}
       >
@@ -117,7 +125,7 @@ function TaskList({ onEdit }) {
             sx={{ 
               textAlign: 'center', 
               py: 4,
-              color: '#9e9e9e' 
+              color: 'var(--color-text-muted)' 
             }}
           >
             <Typography variant="body2">No tasks found.</Typography>
@@ -132,19 +140,19 @@ function TaskList({ onEdit }) {
               mb: 1,
               borderRadius: 2,
               background: task.completed 
-                ? 'rgba(158, 158, 158, 0.08)' 
-                : 'rgba(25, 118, 210, 0.05)',
+                ? 'var(--color-completed-bg)' 
+                : 'var(--color-primary-subtle)',
               border: '1px solid',
               borderColor: task.completed 
-                ? 'rgba(158, 158, 158, 0.15)' 
-                : 'rgba(25, 118, 210, 0.15)',
+                ? 'var(--color-completed-border)' 
+                : 'var(--color-primary-border)',
               transition: 'all 0.2s ease-in-out',
               '&:hover': {
                 background: task.completed 
-                  ? 'rgba(158, 158, 158, 0.12)' 
-                  : 'rgba(25, 118, 210, 0.1)',
+                  ? 'var(--color-completed-bg-hover)' 
+                  : 'var(--color-primary-hover)',
                 transform: 'translateX(4px)',
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+                boxShadow: '0 4px 12px var(--color-shadow-base)',
               }
             }}
           >
@@ -155,10 +163,10 @@ function TaskList({ onEdit }) {
               inputProps={{ 'aria-label': 'Mark task complete' }}
               size="small"
               sx={{
-                color: '#1976d2',
+                color: 'var(--color-primary)',
                 py: 0,
                 '&.Mui-checked': {
-                  color: '#1976d2',
+                  color: 'var(--color-primary)',
                 }
               }}
             />
@@ -168,7 +176,7 @@ function TaskList({ onEdit }) {
                   variant="body2"
                   sx={{ 
                     textDecoration: task.completed ? 'line-through' : 'none', 
-                    color: task.completed ? '#9e9e9e' : '#212121',
+                    color: task.completed ? 'var(--color-text-muted)' : 'var(--color-text-primary)',
                     fontWeight: task.completed ? 400 : 600,
                     fontSize: '1rem'
                   }}
@@ -181,7 +189,7 @@ function TaskList({ onEdit }) {
                   <Typography 
                     variant="body2" 
                     sx={{ 
-                      color: task.completed ? '#bdbdbd' : '#616161',
+                      color: task.completed ? 'var(--color-text-faded)' : 'var(--color-text-secondary)',
                       fontSize: '0.85rem',
                       mt: 0.25
                     }}
@@ -212,14 +220,24 @@ function TaskList({ onEdit }) {
                     height: 20,
                     fontSize: '0.7rem',
                     fontWeight: 500,
-                    background: 'linear-gradient(135deg, #ff9800 0%, #ff6f00 100%)',
+                    background: 'linear-gradient(135deg, var(--color-due-date-start) 0%, var(--color-due-date-end) 100%)',
                     color: 'white',
-                    '& .MuiChip-icon': {
-                      color: 'white'
-                    }
+                    '& .MuiChip-icon': { color: 'white' }
                   }}
                 />
               )}
+              <Chip
+                label={PRIORITY_LABELS[task.priority] || 'P3'}
+                size="small"
+                data-testid={`priority-badge-${task.id}`}
+                sx={{
+                  height: 20,
+                  fontSize: '0.7rem',
+                  fontWeight: 700,
+                  bgcolor: PRIORITY_COLORS[task.priority] || PRIORITY_COLORS.P3,
+                  color: 'white',
+                }}
+              />
               <Box 
                 sx={{ 
                   display: 'flex', 
@@ -236,9 +254,9 @@ function TaskList({ onEdit }) {
                   onClick={() => onEdit(task)}
                   size="small"
                   sx={{
-                    color: '#1976d2',
+                    color: 'var(--color-primary)',
                     '&:hover': {
-                      background: 'rgba(25, 118, 210, 0.1)',
+                      background: 'var(--color-primary-hover)',
                     }
                   }}
                 >
@@ -249,9 +267,9 @@ function TaskList({ onEdit }) {
                   onClick={() => handleDelete(task.id)}
                   size="small"
                   sx={{
-                    color: '#f44336',
+                    color: 'var(--color-error)',
                     '&:hover': {
-                      background: 'rgba(244, 67, 54, 0.1)',
+                      background: 'var(--color-error-hover)',
                     }
                   }}
                 >
