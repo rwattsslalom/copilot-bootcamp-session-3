@@ -165,14 +165,19 @@ function TaskForm({ onSave, initialTask }) {
                 '&.Mui-focused .MuiOutlinedInput-notchedOutline': { borderColor: 'var(--color-primary)' }
               }}
             >
-              {PRIORITY_OPTIONS.map(opt => (
-                <MenuItem key={opt.value} value={opt.value}>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: opt.color, flexShrink: 0 }} />
-                    {opt.label}
-                  </Box>
-                </MenuItem>
-              ))}
+              {PRIORITY_OPTIONS.map(opt => {
+                const isSelected = priority === opt.value;
+                return (
+                  <MenuItem key={opt.value} value={opt.value}>
+                    <Box display="flex" alignItems="center" gap={1}
+                      sx={{ color: isSelected ? 'var(--color-priority-selected)' : 'var(--color-priority-unselected)', fontWeight: isSelected ? 700 : 400 }}
+                    >
+                      <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: isSelected ? 'var(--color-priority-selected)' : 'var(--color-priority-unselected)', flexShrink: 0 }} />
+                      {opt.label}
+                    </Box>
+                  </MenuItem>
+                );
+              })}
             </Select>
           </FormControl>
         </Box>

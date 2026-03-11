@@ -12,6 +12,10 @@
   --color-priority-p2: #ff9800;
   --color-priority-p3: #9e9e9e;
 
+  /* Priority select items */
+  --color-priority-selected: #07F2E6;
+  --color-priority-unselected: #7A7A7A;
+
   /* Due date chip */
   --color-due-date-start: #ff9800;
   --color-due-date-end: #ff6f00;
